@@ -1,6 +1,6 @@
-import { parse } from "https://deno.land/std@0.218.0/flags/mod.ts";
-import { join, resolve } from "https://deno.land/std@0.218.0/path/mod.ts";
+import { resolve } from "https://deno.land/std@0.218.0/path/mod.ts";
 import { walk } from "https://deno.land/std@0.218.0/fs/walk.ts";
+import { parseArgs } from "@std/cli/parse-args";
 
 /**
  * DateオブジェクトをYYYY/MM/DD 形式の文字列にフォーマットします。
@@ -110,7 +110,7 @@ export async function findJpgFiles(dirPath: string): Promise<string[]> {
   try {
     for await (const entry of walk(dirPath, { exts: [".jpg"] })) {
       if (entry.isFile) {
-        jpgFiles.push(`./${entry.path}`); // パスを "./" で始めるよう修正
+        jpgFiles.push(entry.path.replace(/^\.\//, "")); // "./" を削除して相対パスを統一
       }
     }
   } catch (error) {
@@ -151,15 +151,14 @@ export function formatTsv(data: Record<string, string>[]): string {
  * メイン処理関数
  */
 async function main() {
-  const args = parse(Deno.args, {
+  const args = parseArgs(Deno.args, {
+    boolean: ["debug"],
     string: ["format", "dir"],
-    boolean: ["debug"], // --debug オプションを追加
     default: { format: "csv", debug: false },
   });
 
-  const debug = args.debug; // デバッグモードのフラグ
-
-  const imageDirPath = args.dir ? resolve(args.dir) : null;
+  const debug = args.debug as boolean;
+  const imageDirPath = args.dir ? resolve(args.dir as string) : null;
   if (!imageDirPath) {
     console.error("--dir オプションで画像ディレクトリを指定してください。");
     Deno.exit(1);
