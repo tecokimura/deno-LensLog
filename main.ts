@@ -8,20 +8,22 @@ import { walk } from "https://deno.land/std@0.218.0/fs/walk.ts";
  * @param debug デバッグモードのフラグ
  * @returns フォーマットされた日付文字列、または "none"
  */
-function formatDate(dateString: string | null | undefined, debug: boolean): string | "none" {
+export function formatDate(dateString: string | null | undefined, debug: boolean): string | "none" {
   if (!dateString) {
     return "none";
   }
   try {
-    // 日付部分のコロンをハイフンに置換
     const normalizedDateString = dateString.replace(/(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3");
     const date = new Date(normalizedDateString);
+    if (isNaN(date.getTime())) {
+      return "none"; // 無効な日付の場合は "none" を返す
+    }
     if (debug) {
-      console.log("Normalized Date String:", normalizedDateString); // デバッグ出力
-      console.log("Date object:", date); // デバッグ出力
-      console.log("Year:", date.getFullYear()); // デバッグ出力
-      console.log("Month:", date.getMonth()); // デバッグ出力
-      console.log("Day:", date.getDate()); // デバッグ出力
+      console.log("Normalized Date String:", normalizedDateString);
+      console.log("Date object:", date);
+      console.log("Year:", date.getFullYear());
+      console.log("Month:", date.getMonth());
+      console.log("Day:", date.getDate());
     }
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -103,12 +105,12 @@ async function getExifData(
  * @param dirPath 検索するディレクトリのパス
  * @returns JPGファイルのパスの配列
  */
-async function findJpgFiles(dirPath: string): Promise<string[]> {
+export async function findJpgFiles(dirPath: string): Promise<string[]> {
   const jpgFiles: string[] = [];
   try {
     for await (const entry of walk(dirPath, { exts: [".jpg"] })) {
       if (entry.isFile) {
-        jpgFiles.push(entry.path);
+        jpgFiles.push(`./${entry.path}`); // パスを "./" で始めるよう修正
       }
     }
   } catch (error) {
@@ -122,7 +124,7 @@ async function findJpgFiles(dirPath: string): Promise<string[]> {
  * @param data EXIFデータの配列
  * @returns CSV形式の文字列
  */
-function formatCsv(data: Record<string, string>[]): string {
+export function formatCsv(data: Record<string, string>[]): string {
   if (data.length === 0) {
     return "";
   }
@@ -136,7 +138,7 @@ function formatCsv(data: Record<string, string>[]): string {
  * @param data EXIFデータの配列
  * @returns TSV形式の文字列
  */
-function formatTsv(data: Record<string, string>[]): string {
+export function formatTsv(data: Record<string, string>[]): string {
   if (data.length === 0) {
     return "";
   }
