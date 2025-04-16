@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "dev": "deno run --env --allow-env --allow-read --allow-run main.ts",
+    "debug": "deno run --allow-read --allow-run main.ts --dir=./images --format=csv --debug",
+    "dev": "deno run --allow-read --allow-run main.ts --dir=./images --format=csv",
     "run": "deno run --env main.ts",
   },
   "imports": {
