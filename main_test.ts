@@ -21,16 +21,17 @@ Deno.test("formatCsv - valid data", () => {
   const data = [
     {
       "Create Date": "2025/04/16",
-      "File Name": "a.jpg",
-      "Camera Model Name": "Canon EOS",
-      "Shutter Speed Value": "1/100",
+      "Focal Length": "50mm",
       "F Number": "2.8",
+      "Shutter Speed Value": "1/100",
       "ISO": "100",
       "Lens Model": "EF 24-70mm",
+      "Camera Model Name": "Canon EOS",
+      "File Name": "a.jpg",
     },
   ];
   const result = formatCsv(data);
-  const expected = "Create Date,File Name,Camera Model Name,Shutter Speed Value,F Number,ISO,Lens Model\n2025/04/16,a.jpg,Canon EOS,1/100,2.8,100,EF 24-70mm";
+  const expected = "Create Date,Focal Length,F Number,Shutter Speed Value,ISO,Lens Model,Camera Model Name,File Name\n2025/04/16,50mm,2.8,1/100,100,EF 24-70mm,Canon EOS,a.jpg";
   assertEquals(result, expected);
 });
 
@@ -38,16 +39,17 @@ Deno.test("formatTsv - valid data", () => {
   const data = [
     {
       "Create Date": "2025/04/16",
-      "File Name": "a.jpg",
-      "Camera Model Name": "Canon EOS",
-      "Shutter Speed Value": "1/100",
+      "Focal Length": "50mm",
       "F Number": "2.8",
+      "Shutter Speed Value": "1/100",
       "ISO": "100",
       "Lens Model": "EF 24-70mm",
+      "Camera Model Name": "Canon EOS",
+      "File Name": "a.jpg",
     },
   ];
   const result = formatTsv(data);
-  const expected = "Create Date\tFile Name\tCamera Model Name\tShutter Speed Value\tF Number\tISO\tLens Model\n2025/04/16\ta.jpg\tCanon EOS\t1/100\t2.8\t100\tEF 24-70mm";
+  const expected = "Create Date\tFocal Length\tF Number\tShutter Speed Value\tISO\tLens Model\tCamera Model Name\tFile Name\n2025/04/16\t50mm\t2.8\t1/100\t100\tEF 24-70mm\tCanon EOS\ta.jpg";
   assertEquals(result, expected);
 });
 

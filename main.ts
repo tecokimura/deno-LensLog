@@ -43,6 +43,7 @@ interface ExifData {
   ISO?: string;
   LensModel?: string;
   CreateDate?: string;
+  FocalLength?: string; // Focal Length を追加
 }
 
 /**
@@ -86,6 +87,7 @@ async function getExifData(
       exifData["F Number"] = jsonData[0].FNumber ?? "none";
       exifData["ISO"] = jsonData[0].ISO ?? "none";
       exifData["Lens Model"] = jsonData[0].LensModel ?? "none";
+      exifData["Focal Length"] = jsonData[0].FocalLength ?? "none"; // Focal Length を追加
       return exifData;
     } else {
       return Object.fromEntries(
@@ -128,8 +130,28 @@ export function formatCsv(data: Record<string, string>[]): string {
   if (data.length === 0) {
     return "";
   }
-  const header = ["Create Date", "File Name", "Camera Model Name", "Shutter Speed Value", "F Number", "ISO", "Lens Model"].join(","); // ヘッダー行を作成
-  const rows = data.map((item) => [item["Create Date"], item["File Name"], item["Camera Model Name"], item["Shutter Speed Value"], item["F Number"], item["ISO"], item["Lens Model"]].join(",")); // データ行を作成
+  const header = [
+    "Create Date",
+    "Focal Length",
+    "F Number",
+    "Shutter Speed Value",
+    "ISO",
+    "Lens Model",
+    "Camera Model Name",
+    "File Name" // 順番を変更
+  ].join(","); // ヘッダー行を作成
+
+  const rows = data.map((item) => [
+    item["Create Date"],
+    item["Focal Length"],
+    item["F Number"],
+    item["Shutter Speed Value"],
+    item["ISO"],
+    item["Lens Model"],
+    item["Camera Model Name"],
+    item["File Name"] // 順番を変更
+  ].join(",")); // データ行を作成
+
   return `${header}\n${rows.join("\n")}`;
 }
 
@@ -142,8 +164,28 @@ export function formatTsv(data: Record<string, string>[]): string {
   if (data.length === 0) {
     return "";
   }
-  const header = ["Create Date", "File Name", "Camera Model Name", "Shutter Speed Value", "F Number", "ISO", "Lens Model"].join("\t"); // ヘッダー行を作成
-  const rows = data.map((item) => [item["Create Date"], item["File Name"], item["Camera Model Name"], item["Shutter Speed Value"], item["F Number"], item["ISO"], item["Lens Model"]].join("\t")); // データ行を作成
+  const header = [
+    "Create Date",
+    "Focal Length",
+    "F Number",
+    "Shutter Speed Value",
+    "ISO",
+    "Lens Model",
+    "Camera Model Name",
+    "File Name" // 順番を変更
+  ].join("\t"); // ヘッダー行を作成
+
+  const rows = data.map((item) => [
+    item["Create Date"],
+    item["Focal Length"],
+    item["F Number"],
+    item["Shutter Speed Value"],
+    item["ISO"],
+    item["Lens Model"],
+    item["Camera Model Name"],
+    item["File Name"] // 順番を変更
+  ].join("\t")); // データ行を作成
+
   return `${header}\n${rows.join("\n")}`;
 }
 
@@ -183,6 +225,7 @@ async function main() {
     "ISO",
     "LensModel",
     "CreateDate",
+    "FocalLength", // Focal Length を追加
   ];
 
   const allExifData: Record<string, string>[] = [];
